@@ -148,10 +148,105 @@ public class Main {
 
     public static void showStatistics() {
         if (fullStatiistic) {
+            if (integers.size() > 0) {
+                try {
+                    String intMax = "";
+                    String intMin = integers.get(0);
+                    Long sum = 0L;
+                    for (int i = 0; i < integers.size(); i++) {
+                        sum += Long.parseLong(integers.get(i));
+                        if (firstIntBigger(integers.get(i), intMax))
+                            intMax = integers.get(i);
+                        else if (firstIntBigger(intMin, integers.get(i)))
+                            intMin = integers.get(i);
+                    }
+                    System.out.println(String.format("|%-43s|", "integers: " + integers.size()));
+                    System.out.println(String.format("|%-10s|%-10s|%-10s|%-10s|", "min", "max", "sum", "average"));
+                    System.out.println(String.format("|%-10s|%-10s|%-10d|%-10d|", intMin, intMax, sum, sum / integers.size()));
+                    System.out.println("---------------------------------------------");
+                } catch (Throwable e) {
 
+                    System.out.println(String.format("|%-43s|", "integers: " + integers.size()));
+                    System.out.println(String.format("|%-43s|", "Unforchanetly there is a trouble with parsing too big integer value"));
+                    System.out.println("---------------------------------------------");
+                }
+            } else {
+                System.out.println(String.format("|%-43s|", "integers: " + integers.size()));
+                System.out.println("---------------------------------------------");
+            }
+            if (doubles.size() > 0) {
+                try {
+                    Double min = Double.parseDouble(doubles.get(0));
+                    Double max = Double.parseDouble(doubles.get(0));
+
+                    Double sum = 0.0;
+                    for (int i = 0; i < doubles.size(); i++) {
+                        try {
+                            sum += Double.parseDouble(doubles.get(i));
+                        } catch (Throwable e) {
+
+                        }
+                        if (Double.parseDouble(doubles.get(i)) > max)
+                            max = Double.parseDouble(doubles.get(i));
+                        else if (Double.parseDouble(doubles.get(i)) < min)
+                            min = Double.parseDouble(doubles.get(i));
+                    }
+                    System.out.println(String.format("|%-43s|", "doubles: " + doubles.size()));
+                    System.out.println(String.format("|%-10s|%-10s|%-10s|%-10s|", "min", "max", "sum", "average"));
+                    System.out.println(String.format("|%-10f|%-10f|%-10f|%-10f|", min, max, sum, sum / doubles.size()));
+                    System.out.println("---------------------------------------------");
+
+                } catch (Throwable e) {
+
+                    System.out.println(String.format("|%-43s|", "doubles: " + doubles.size()));
+
+                    System.out.println(String.format("|%-43s|", "Unforchanetly there is a trouble to parsing some double value"));
+                }
+            } else {
+
+                System.out.println(String.format("|%-43s|", "doubles: " + doubles.size()));
+                System.out.println("---------------------------------------------");
+            }
+
+            if (strings.size() > 0) {
+                Integer shortest = strings.get(0).length();
+                Integer longest = strings.get(0).length();
+
+                for (int i = 0; i < strings.size(); i++) {
+                    if (strings.get(i).length() < shortest)
+                        shortest = strings.get(i).length();
+                    if (strings.get(i).length() > longest)
+                        longest = strings.get(i).length();
+                }
+
+
+                System.out.println(String.format("|%-43s|", "strings: " + strings.size()));
+                System.out.println(String.format("|%-21s|%-21s|", "shortest size", "longest size"));
+                System.out.println(String.format("|%-21d|%-21d|", shortest, longest, "", ""));
+
+                System.out.println("---------------------------------------------");
+            } else {
+
+                System.out.println(String.format("|%-43s|", "strings: " + strings.size()));
+                System.out.println("---------------------------------------------");
+            }
         } else if (shortStatistic) {
             System.out.println("Integers " + integers.size() + "\nDoubles " + doubles.size() + "\nStrings " + strings.size());
         }
+    }
+
+    public static boolean firstIntBigger(String first, String second) {
+        if (first.length() > second.length())
+            return true;
+        else if (first.length() == second.length()) {
+            for (int i = 0; i < first.length(); i++) {
+                if (first.charAt(i) > second.charAt(i))
+                    return true;
+                else if (first.charAt(i) < second.charAt(i))
+                    return false;
+            }
+        }
+        return false;
     }
 
     public static int lineVariable(String line) {
@@ -165,8 +260,11 @@ public class Main {
             return false;
         }
         char c;
-        for (int i = 0; i < line.length(); i++){
+        for (int i = 0; i < line.length(); i++) {
+
             c = line.charAt(i);
+            if (i == 0 && c == '-')
+                continue;
             if (c < '0' || c > '9')
                 return false;
         }
