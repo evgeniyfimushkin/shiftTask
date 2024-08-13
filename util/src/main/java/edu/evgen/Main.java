@@ -129,7 +129,7 @@ public class Main {
                     String line;
                     try {
                         while ((line = reader.readLine()) != null) {
-                            switch (lineVariable(line)) {
+                            switch (lineVariable(line.trim())) {
                                 case 1:
                                     integers.add(line);
                                     break;
@@ -264,7 +264,7 @@ public class Main {
         for (int i = 0; i < line.length(); i++) {
 
             c = line.charAt(i);
-            if (i == 0 && c == '-')
+            if ((i == 0 && c == '-')||c < 32)
                 continue;
             if (c < '0' || c > '9')
                 return false;
