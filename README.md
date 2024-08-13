@@ -1,6 +1,6 @@
 ### java and gradle version
 project created using java-17-openjdk and gradle 8.9
-### build
+### build and run
 go to util/ and run the command
 on linux:
 ```
