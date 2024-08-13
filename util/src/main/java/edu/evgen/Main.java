@@ -29,7 +29,7 @@ public class Main {
             System.out.println("         [-s] - show short statistics");
             System.out.println("         [-f] - show full statistics");
         } else {
-
+            //input arguments handle
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.equals("-a"))
@@ -59,24 +59,40 @@ public class Main {
                 ;
 
             }
+            //
 
-            readers = inputFiles
-                    .stream().map(file -> {
-                                try {
-                                    return new BufferedReader(new FileReader(file));
-                                } catch (IOException e) {
-                                    System.out.println("file not found: " + file);
-                                    closingReaders();
-                                    System.exit(1);
-                                    return null;
-                                }
-                            }
-                    ).collect(Collectors.toList());
-
+            openBufferedReaders();
             parsingFiles();
+            closingBufferedReaders();
             showStatistics();
 
         }
+    }
+
+    private static void openBufferedReaders() {
+        readers = inputFiles
+                .stream().map(file -> {
+                            try {
+                                return new BufferedReader(new FileReader(file));
+                            } catch (IOException e) {
+                                System.out.println("file not found: " + file);
+                                closingBufferedReaders();
+                                System.exit(1);
+                                return null;
+                            }
+                        }
+                ).collect(Collectors.toList());
+    }
+
+    public static void closingBufferedReaders() {
+        if (readers != null)
+            readers.forEach(bufferedReader -> {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    System.out.println("File closing error " + bufferedReader.toString());
+                }
+            });
     }
 
     public static void parsingFiles() {
@@ -88,16 +104,18 @@ public class Main {
 
     private static void writingListInFile(ArrayList<String> arr, String path) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path, additionalRecording))) {
-            arr.forEach(
-                    elem -> {
-                        try {
-                            bufferedWriter.write(elem);
-                            bufferedWriter.newLine();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-            );
+            if (additionalRecording)
+                bufferedWriter.newLine();
+            for (int i = 0; i < arr.size(); i++) {
+                try {
+                    bufferedWriter.write(arr.get(i));
+                    if (i < arr.size() - 1)
+                        bufferedWriter.newLine(); //last string doesn't have \n
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         } catch (IOException e) {
             System.out.println("Can't write in file " + path);
         }
@@ -126,17 +144,6 @@ public class Main {
                     }
                 }
         );
-    }
-
-    public static void closingReaders() {
-        if (readers != null)
-            readers.forEach(bufferedReader -> {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    System.out.println("File closing error " + bufferedReader.toString());
-                }
-            });
     }
 
     public static void showStatistics() {
