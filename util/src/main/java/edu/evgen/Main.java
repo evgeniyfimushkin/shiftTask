@@ -47,9 +47,9 @@ public class Main {
                 else if (arg.equals("-o")) {
                     if (i < args.length - 1) {
                         arg = args[++i];
-                        path = arg;
+                        path = arg+"/";
                     } else {
-                        System.out.println("There is must be a path after [-a]");
+                        System.out.println("There is must be a path after [-o]");
                         return;
                     }
                 } else {
@@ -103,21 +103,23 @@ public class Main {
     }
 
     private static void writingListInFile(ArrayList<String> arr, String path) {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path, additionalRecording))) {
-            if (additionalRecording)
-                bufferedWriter.newLine();
-            for (int i = 0; i < arr.size(); i++) {
-                try {
-                    bufferedWriter.write(arr.get(i));
-                    if (i < arr.size() - 1)
-                        bufferedWriter.newLine(); //last string doesn't have \n
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        if (arr.size() > 0) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path, additionalRecording))) {
+                if (additionalRecording)
+                    bufferedWriter.newLine();
+                for (int i = 0; i < arr.size(); i++) {
+                    try {
+                        bufferedWriter.write(arr.get(i));
+                        if (i < arr.size() - 1)
+                            bufferedWriter.newLine(); //last string doesn't have \n
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
 
-        } catch (IOException e) {
-            System.out.println("Can't write in file " + path);
+            } catch (IOException e) {
+                System.out.println("Can't write in file " + path);
+            }
         }
     }
 
@@ -201,6 +203,7 @@ public class Main {
                     System.out.println(String.format("|%-43s|", "doubles: " + doubles.size()));
 
                     System.out.println(String.format("|%-43s|", "Unforchanetly there is a trouble to parsing some double value"));
+                    System.out.println("---------------------------------------------");
                 }
             } else {
 
@@ -218,8 +221,6 @@ public class Main {
                     if (strings.get(i).length() > longest)
                         longest = strings.get(i).length();
                 }
-
-
                 System.out.println(String.format("|%-43s|", "strings: " + strings.size()));
                 System.out.println(String.format("|%-21s|%-21s|", "shortest size", "longest size"));
                 System.out.println(String.format("|%-21d|%-21d|", shortest, longest, "", ""));
@@ -231,7 +232,7 @@ public class Main {
                 System.out.println("---------------------------------------------");
             }
         } else if (shortStatistic) {
-            System.out.println("Integers " + integers.size() + "\nDoubles " + doubles.size() + "\nStrings " + strings.size());
+            System.out.println("Integers: " + integers.size() + "\nDoubles: " + doubles.size() + "\nStrings: " + strings.size());
         }
     }
 
